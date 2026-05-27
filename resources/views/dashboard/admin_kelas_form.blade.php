@@ -47,7 +47,7 @@
                     </option>
                         @endforeach
                     </select>
-                    <p class="text-[10px] text-slate-400 mt-1 font-medium">*Satu guru hanya bisa di-plot untuk satu ruang kelas saja.</p>
+                    <p class="text-[10px] text-slate-400 mt-1 font-medium">*Satu guru hanya bisa menjadi wali kelas untuk satu ruang kelas saja.</p>
                 </div>
 
                 <button type="submit" class="w-full bg-sky-500 hover:bg-sky-600 text-white font-bold py-3.5 rounded-xl shadow-md shadow-sky-500/10 transition active:scale-[0.99] cursor-pointer flex items-center justify-center gap-2">
