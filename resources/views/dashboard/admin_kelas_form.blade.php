@@ -62,7 +62,11 @@
                             </option>
                         @endforeach
                     </select>
+<<<<<<< HEAD
                     <p class="text-xs text-slate-400 mt-1.5">*Satu guru hanya dapat menjadi wali kelas 1 ruang kelas.</p>
+=======
+                    <p class="text-[10px] text-slate-400 mt-1 font-medium">*Satu guru hanya bisa menjadi wali kelas untuk satu ruang kelas saja.</p>
+>>>>>>> 4a322da1abc015338aa192da8bc785f07d2a3d97
                 </div>
 
                 <!-- Submit -->
@@ -76,5 +80,9 @@
             </form>
         </div>
     </div>
+<<<<<<< HEAD
 </div>
 @endsection
+=======
+@endsection
+>>>>>>> 4a322da1abc015338aa192da8bc785f07d2a3d97

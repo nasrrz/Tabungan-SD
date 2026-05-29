@@ -1,58 +1,231 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 💰 Tabungan-SD (Sistem Informasi Tabungan Siswa Sekolah Dasar)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+[![Laravel Version](https://img.shields.io/badge/Laravel-v11.x-FF2D20?logo=laravel&logoColor=white)](https://laravel.com)
+[![PHP Version](https://img.shields.io/badge/PHP-v8.3-777BB4?logo=php&logoColor=white)](https://www.php.net)
+[![Nginx](https://img.shields.io/badge/Nginx-v1.18-009639?logo=nginx&logoColor=white)](https://nginx.org)
+[![Apache](https://img.shields.io/badge/Apache-v2.4-D11141?logo=apache&logoColor=white)](https://httpd.apache.org/)
+[![Database](https://img.shields.io/badge/MariaDB-v10.11-003545?logo=mariadb&logoColor=white)](https://mariadb.org)
 
-## About Laravel
+Sistem Informasi Tabungan Siswa Sekolah Dasar (Tabungan-SD) adalah aplikasi manajemen dan rekapitulasi transaksi tabungan berbasis web. Proyek ini dirancang untuk mendigitalisasi pencatatan keuangan sekolah secara aman, transparan, dan akurat yang dapat diakses oleh pihak sekolah maupun dimonitor oleh orang tua murid.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🚀 Fitur Utama
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+* **Autentikasi Multi-User:** Hak akses terpisah untuk Administrator, Guru (Wali Kelas), dan Orang Tua Siswa.
+* **Manajemen Data Induk:** Pengelolaan data siswa, kelas relasional, serta manajemen akun pengguna.
+* **Pencatatan Transaksi Real-time:** Fitur setor dan tarik tunai tabungan dengan kalkulasi saldo otomatis yang presisi.
+* **Ekspor Laporan:** Cetak riwayat transaksi dan rekapitulasi tabungan ke format Excel menggunakan library `status/maatwebsite`.
+* **Keamanan Data:** Validasi mutasi yang ketat untuk menghindari manipulasi saldo sepihak.
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## 🛠️ Stack Teknologi & Spesifikasi Server
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Backend & Framework
+* **Framework:** Laravel 11.x
+* **Bahasa Pemrograman:** PHP 8.3
+* **Ekstensi PHP Wajib:** `openssl`, `pdo_mysql`, `mbstring`, `xml`, `curl`, `ctype`, `json`, `gd` (untuk kebutuhan ekspor Excel).
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+### Web Server & Database
+* **Web Server:** Nginx atau Apache2 (Konfigurasi Produksi Port `80`/`443`)
+* **Database Engine:** MariaDB v10.11+ / MySQL v8.0+
 
-## Agentic Development
+---
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## 📂 Struktur Database (Skema Utama)
 
-```bash
-composer require laravel/boost --dev
+Aplikasi ini menggunakan relasi database yang ketat guna menjaga integritas data keuangan. Berikut adalah contoh blueprint migrasi pada tabel kelas:
 
-php artisan boost:install
+```php
+Schema::create('kelas', function (Blueprint $table) {
+    $table->id();
+    $table->string('nama_kelas');
+    
+    // Integrity constraint: Set Null jika akun user/guru dihapus
+    $table->foreignId('guru_id')->nullable()->constrained('users')->nullOnDelete();
+    
+    $table->timestamps();
+});
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+---
 
-## Contributing
+🏁 Panduan Instalasi Deployment (Ubuntu / Debian)
+Ikuti langkah-langkah berikut untuk melakukan deployment repositori ini ke server produksi berbasis Debian/Ubuntu Linux.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+1. Persiapan Environment Server
+Pastikan sistem Anda sudah memperbarui repositori dan memasang dependensi dasar:
 
-## Code of Conduct
+```Bash
+sudo apt update && sudo apt upgrade -y
+sudo apt install git curl unzip -y
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+---
 
-## Security Vulnerabilities
+2. Clone Repositori
+Clone proyek ini ke direktori web server (standar: /var/www/):
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```Bash
+cd /var/www
+sudo git clone [https://github.com/username-kamu/Tabungan-SD.git](https://github.com/username-kamu/Tabungan-SD.git)
+cd Tabungan-SD
+```
 
-## License
+---
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+3. Install Dependensi Composer
+Pastikan Composer sudah terinstall global pada server Anda, kemudian jalankan:
+
+```Bash
+composer install --no-dev --optimize-autoloader
+```
+
+---
+
+4. Konfigurasi Environment File
+Salin file .env.example menjadi .env lalu sesuaikan konfigurasi database Anda:
+
+```Bash
+cp .env.example .env
+php artisan key:generate --force
+```
+
+Buka file .env mengunakan teks editor (nano .env) dan sesuaikan baris berikut:
+
+```Code snippet
+APP_ENV=production
+APP_DEBUG=false
+APP_URL=http://domain_atau_ip_server_anda
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=tabungan_sd
+DB_USERNAME=user_database_anda
+DB_PASSWORD=password_database_anda
+```
+
+---
+
+5. Eksekusi Migrasi & Seeder Database
+Buat database kosong bernama tabungan_sd di MySQL/MariaDB server Anda, lalu jalankan perintah:
+
+```Bash
+php artisan migrate --force
+php artisan db:seed --force
+```
+
+---
+
+6. Atur Hak Akses Folder (Permission)
+Berikan hak akses kepemilikan direktori kepada pengguna web server (www-data):
+
+```Bash
+sudo chown -R www-data:www-data /var/www/Tabungan-SD
+sudo find /var/www/Tabungan-SD -type f -exec chmod 644 {} \;
+sudo find /var/www/Tabungan-SD -type d -exec chmod 755 {} \;
+```
+
+# Berikan izin tulis khusus untuk folder penyimpanan Laravel
+
+```sudo chmod -R 775 storage bootstrap/cache```
+
+---
+
+🌐 Referensi Konfigurasi Web Server
+Pilih salah satu dari konfigurasi web server di bawah ini sesuai dengan engine yang aktif di server Debian/Ubuntu Anda.
+
+Opsi A: Menggunakan Nginx (Direkomendasikan)
+Buat file konfigurasi baru di /etc/nginx/sites-available/tabungan-sd:
+
+```Nginx
+server {
+    listen 80;
+    server_name domain_atau_ip_server_anda;
+    root /var/www/Tabungan-SD/public;
+
+    add_header X-Frame-Options "SAMEORIGIN";
+    add_header X-Content-Type-Options "nosniff";
+
+    index index.php index.html;
+
+    charset utf-8;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location = /favicon.ico { access_log off; log_not_found off; }
+    location = /robots.txt  { access_log off; log_not_found off; }
+
+    error_page 404 /index.php;
+
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/run/php/php8.3-fpm.sock;
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+
+    location ~ /\.(?!well-known).* {
+        deny all;
+    }
+}
+```
+
+Aktifkan konfigurasi dan muat ulang Nginx:
+
+```Bash
+sudo ln -s /etc/nginx/sites-available/tabungan-sd /etc/nginx/sites-enabled/
+sudo nginx -t
+sudo systemctl restart nginx
+```
+
+---
+
+Opsi B: Menggunakan Apache2
+Pastikan modul mod_rewrite telah aktif pada Apache:
+
+```Bash
+sudo a2enmod rewrite
+Buat file konfigurasi VirtualHost baru di /etc/apache2/sites-available/tabungan-sd.conf:
+```
+
+```Apache
+<VirtualHost *:80>
+    ServerName domain_atau_ip_server_anda
+    ServerAdmin webmaster@localhost
+    DocumentRoot /var/www/Tabungan-SD/public
+
+    <Directory /var/www/Tabungan-SD/public>
+        Options Indexes FollowSymLinks MultiViews
+        AllowOverride All
+        Require all granted
+    </Directory>
+
+    ErrorLog ${APACHE_LOG_DIR}/tabungan_sd_error.log
+    CustomLog ${APACHE_LOG_DIR}/tabungan_sd_access.log combined
+</VirtualHost>
+```
+
+Aktifkan VirtualHost dan muat ulang Apache2:
+
+```Bash
+sudo a2ensite tabungan-sd.conf
+sudo a2dissite 000-default.conf
+sudo systemctl restart apache2
+```
+
+---
+
+🛠️ Optimasi Produksi (Production Cache)
+Setelah aplikasi berhasil terpasang dan berjalan lancar, jalankan serangkaian perintah ini di direktori root aplikasi untuk mempercepat performa Laravel:
+
+```Bash
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+```
+👷 Dikembangkan oleh: Nasir Fadhlurrohman.
