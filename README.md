@@ -2,7 +2,7 @@
 
 [![Laravel Version](https://img.shields.io/badge/Laravel-v11.x-FF2D20?logo=laravel&logoColor=white)](https://laravel.com)
 [![PHP Version](https://img.shields.io/badge/PHP-v8.3-777BB4?logo=php&logoColor=white)](https://www.php.net)
-[![Nginx](https://img.shields.io/badge/Nginx-v1.24-009639?logo=nginx&logoColor=white)](https://nginx.org)
+[![Nginx](https://img.shields.io/badge/Nginx-v1.18-009639?logo=nginx&logoColor=white)](https://nginx.org)
 [![Apache](https://img.shields.io/badge/Apache-v2.4-D11141?logo=apache&logoColor=white)](https://httpd.apache.org/)
 [![Database](https://img.shields.io/badge/MariaDB-v10.11-003545?logo=mariadb&logoColor=white)](https://mariadb.org)
 
@@ -81,6 +81,9 @@ Pastikan Composer sudah terinstall global pada server Anda, kemudian jalankan:
 ```Bash
 composer install --no-dev --optimize-autoloader
 ```
+
+---
+
 4. Konfigurasi Environment File
 Salin file .env.example menjadi .env lalu sesuaikan konfigurasi database Anda:
 
@@ -88,6 +91,7 @@ Salin file .env.example menjadi .env lalu sesuaikan konfigurasi database Anda:
 cp .env.example .env
 php artisan key:generate --force
 ```
+
 Buka file .env mengunakan teks editor (nano .env) dan sesuaikan baris berikut:
 
 ```Code snippet
@@ -102,6 +106,9 @@ DB_DATABASE=tabungan_sd
 DB_USERNAME=user_database_anda
 DB_PASSWORD=password_database_anda
 ```
+
+---
+
 5. Eksekusi Migrasi & Seeder Database
 Buat database kosong bernama tabungan_sd di MySQL/MariaDB server Anda, lalu jalankan perintah:
 
@@ -109,6 +116,9 @@ Buat database kosong bernama tabungan_sd di MySQL/MariaDB server Anda, lalu jala
 php artisan migrate --force
 php artisan db:seed --force
 ```
+
+---
+
 6. Atur Hak Akses Folder (Permission)
 Berikan hak akses kepemilikan direktori kepada pengguna web server (www-data):
 
@@ -117,8 +127,13 @@ sudo chown -R www-data:www-data /var/www/Tabungan-SD
 sudo find /var/www/Tabungan-SD -type f -exec chmod 644 {} \;
 sudo find /var/www/Tabungan-SD -type d -exec chmod 755 {} \;
 ```
+
 # Berikan izin tulis khusus untuk folder penyimpanan Laravel
+
 ```sudo chmod -R 775 storage bootstrap/cache```
+
+---
+
 🌐 Referensi Konfigurasi Web Server
 Pilih salah satu dari konfigurasi web server di bawah ini sesuai dengan engine yang aktif di server Debian/Ubuntu Anda.
 
@@ -159,6 +174,7 @@ server {
     }
 }
 ```
+
 Aktifkan konfigurasi dan muat ulang Nginx:
 
 ```Bash
@@ -166,6 +182,8 @@ sudo ln -s /etc/nginx/sites-available/tabungan-sd /etc/nginx/sites-enabled/
 sudo nginx -t
 sudo systemctl restart nginx
 ```
+
+---
 
 Opsi B: Menggunakan Apache2
 Pastikan modul mod_rewrite telah aktif pada Apache:
@@ -191,6 +209,7 @@ Buat file konfigurasi VirtualHost baru di /etc/apache2/sites-available/tabungan-
     CustomLog ${APACHE_LOG_DIR}/tabungan_sd_access.log combined
 </VirtualHost>
 ```
+
 Aktifkan VirtualHost dan muat ulang Apache2:
 
 ```Bash
