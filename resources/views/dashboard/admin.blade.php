@@ -8,42 +8,63 @@
             <h1 class="text-2xl md:text-3xl font-bold text-slate-800 tracking-tight">Pusat Kendali Admin</h1>
             <p class="text-slate-500 text-sm mt-1 font-medium">Selamat datang kembali, {{ Auth::user()->nama }}! (Tata Usaha)</p>
         </div>
-        <div class="self-start sm:self-auto bg-white px-3 py-1.5 rounded-xl shadow-sm border border-slate-200 text-xs font-bold text-slate-600 flex items-center space-x-1.5">
-            <span class="w-2 h-2 rounded-full bg-blue-600 inline-block animate-pulse"></span>
-            <span>Role: <span class="text-blue-700 uppercase">{{ Auth::user()->role }}</span></span>
+        <div class="self-start sm:self-auto inline-flex items-center gap-2 bg-white px-4 py-2 rounded-lg shadow-sm border border-slate-200 text-sm font-semibold text-slate-600">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span class="uppercase tracking-wide text-xs">{{ Auth::user()->role }}</span>
         </div>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-8">        
-        
-        <div class="bg-white p-5 md:p-6 rounded-2xl shadow-sm border border-slate-200/60 relative overflow-hidden group hover:shadow-md transition">
-            <div class="absolute right-4 top-4 text-slate-100 text-5xl font-bold select-none group-hover:text-sky-50 transition"><i class="bi bi-person-badge"></i></div>
-            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider relative z-10">Total Ustadz dan Ustadzah</p>
-            <p class="text-2xl md:text-3xl font-black text-slate-800 mt-1 relative z-10">{{ $totalGuru }}</p>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+        <!-- Total Guru -->
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 rounded-lg bg-sky-50 flex items-center justify-center text-sky-600">
+                    <i class="bi bi-person-badge text-xl"></i>
+                </div>
+                <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Ustadz / Ustadzah</span>
+            </div>
+            <p class="text-2xl font-bold text-slate-800">{{ $totalGuru }}</p>
         </div>
 
-        <div class="bg-white p-5 md:p-6 rounded-2xl shadow-sm border border-slate-200/60 relative overflow-hidden group hover:shadow-md transition">
-            <div class="absolute right-4 top-4 text-slate-100 text-5xl font-bold select-none group-hover:text-blue-50 transition"><i class="bi bi-people"></i></div>
-            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider relative z-10">Total Seluruh Siswa</p>
-            <p class="text-2xl md:text-3xl font-black text-slate-800 mt-1 relative z-10">{{ $totalSiswa }} <span class="text-sm font-semibold text-slate-500">Anak</span></p>
-        </div>
-        
-        <div class="bg-white p-5 md:p-6 rounded-2xl shadow-sm border border-slate-200/60 relative overflow-hidden group hover:shadow-md transition">
-            <div class="absolute right-4 top-4 text-slate-100 text-5xl font-bold select-none group-hover:text-amber-50 transition"><i class="bi bi-columns-gap"></i></div>
-            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider relative z-10">Jumlah Kelas</p>
-            <p class="text-2xl md:text-3xl font-black text-slate-800 mt-1 relative z-10">{{ $totalKelas }} <span class="text-sm font-semibold text-slate-500">Kelas</span></p>
+        <!-- Total Siswa -->
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
+                    <i class="bi bi-people text-xl"></i>
+                </div>
+                <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Seluruh Siswa</span>
+            </div>
+            <p class="text-2xl font-bold text-slate-800">{{ $totalSiswa }} <span class="text-sm font-medium text-slate-500">Anak</span></p>
         </div>
 
-        <div class="bg-white p-5 md:p-6 rounded-2xl shadow-sm border border-slate-200/60 relative overflow-hidden group hover:shadow-md transition border-l-4 border-l-sky-500">
-            <div class="absolute right-4 top-4 text-slate-100 text-5xl font-bold select-none group-hover:text-sky-50 transition"><i class="bi bi-bank"></i></div>
-            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider relative z-10">Total Kas Sekolah</p>
-            <p class="text-2xl md:text-3xl font-black text-sky-600 mt-1 relative z-10">Rp {{ number_format($totalKasNasional, 0, ',', '.') }}</p>
+        <!-- Jumlah Kelas -->
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 rounded-lg bg-amber-50 flex items-center justify-center text-amber-600">
+                    <i class="bi bi-columns-gap text-xl"></i>
+                </div>
+                <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Jumlah Kelas</span>
+            </div>
+            <p class="text-2xl font-bold text-slate-800">{{ $totalKelas }} <span class="text-sm font-medium text-slate-500">Kelas</span></p>
         </div>
-        
+
+        <!-- Total Kas -->
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600">
+                    <i class="bi bi-bank text-xl"></i>
+                </div>
+                <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Kas Sekolah</span>
+            </div>
+            <p class="text-2xl font-bold text-emerald-600">Rp {{ number_format($totalKasNasional, 0, ',', '.') }}</p>
+        </div>
     </div>
 
-    <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-6 text-center text-slate-400 font-medium">
-        <i class="bi bi-arrow-left-right text-2xl block mb-2 text-slate-300"></i>
-        Siap dikoneksikan dengan CRUD Data Guru & Siswa, Bro!
+    <div class="bg-white rounded-xl border border-dashed border-slate-300 p-8 text-center text-slate-500">
+        <div class="w-12 h-12 mx-auto mb-3 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
+            <i class="bi bi-grid-3x3-gap text-xl"></i>
+        </div>
+        <p class="font-medium">Modul Manajemen Data</p>
+        <p class="text-sm text-slate-400 mt-1">CRUD Guru & Siswa akan tersedia di panel ini.</p>
     </div>
 @endsection

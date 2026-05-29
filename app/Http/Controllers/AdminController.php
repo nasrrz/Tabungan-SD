@@ -10,6 +10,9 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class AdminController extends Controller
 {
+    // =========================================================================
+    // MANAGEMENT DATA SISWA
+    // =========================================================================
     public function importSiswaMassal(Request $request)
     {
         $request->validate([
@@ -36,6 +39,36 @@ class AdminController extends Controller
         $totalKasNasional = $totalSetor - $totalTarik;
 
         return view('dashboard.admin', compact('totalGuru', 'totalSiswa', 'totalKelas', 'totalKasNasional'));
+
+    }public function editSiswa($id)
+    {
+        $siswa = DB::table('siswa')->where('id', $id)->first();
+
+        if (!$siswa) {
+            return redirect('/admin/siswa')->with('error', 'Data siswa tidak ditemukan.');
+        }
+
+        $daftarKelas = DB::table('kelas')->get();
+
+        return view('dashboard.admin_siswa_edit', compact('siswa', 'daftarKelas'));
+    }
+
+    public function updateSiswa(Request $request, $id)
+    {
+        $request->validate([
+            'nama'     => 'required|string|max:255',
+            'nisn'     => 'required|numeric|unique:siswa,nisn,' . $id,
+            'kelas_id' => 'required|exists:kelas,id',
+        ]);
+
+        DB::table('siswa')->where('id', $id)->update([
+            'nama'       => $request->nama,
+            'nisn'       => $request->nisn,
+            'kelas_id'   => $request->kelas_id,
+            'updated_at' => now(),
+        ]);
+
+        return redirect('/admin/siswa')->with('success', 'Data siswa berhasil diperbarui.');
     }
 
     // =========================================================================
@@ -205,10 +238,46 @@ class AdminController extends Controller
         return redirect('/admin/kelas')->with('success', 'Ruang kelas berhasil dihapus!');
     }
 
+    public function editKelas($id)
+    {
+        // 1. Ambil data kelas spesifik berdasarkan ID
+        $kelas = DB::table('kelas')->where('id', $id)->first();
+
+        // Jika kelas tidak ditemukan, kembalikan dengan pesan error
+        if (!$kelas) {
+            return redirect('/admin/kelas')->with('error', 'Data kelas tidak ditemukan!');
+        }
+
+        // 2. Ambil daftar guru yang memiliki role 'guru' untuk opsi dropdown Wali Kelas
+        $daftarGuru = DB::table('users')->where('role', 'guru')->get();
+
+        return view('dashboard.admin_kelas_edit', compact('kelas', 'daftarGuru'));
+    }
+
+    public function updateKelas(Request $request, $id)
+    {
+        // 1. Validasi inputan
+        // Rule unique dikecualikan untuk ID kelas saat ini agar tidak mentok saat disave
+        $request->validate([
+            'nama_kelas' => 'required|string|max:50',
+            'guru_id'    => 'nullable|unique:kelas,guru_id,' . $id
+        ], [
+            'guru_id.unique' => 'Guru tersebut sudah menjadi wali kelas di kelas lain!'
+        ]);
+
+        // 2. Lakukan update data ke database
+        DB::table('kelas')->where('id', $id)->update([
+            'nama_kelas' => $request->nama_kelas,
+            'guru_id'    => $request->guru_id ?: null, // Jika tidak memilih guru, set NULL
+            'updated_at' => now(),
+        ]);
+
+        return redirect('/admin/kelas')->with('success', 'Data ruang kelas berhasil diperbarui!');
+    }
     // =========================================================================
-    // SUNTIKAN BARU: MANAGEMENT DATA ORANG TUA (ROLE: ORANGTUA, USERNAME ONLY)
+    // MANAGEMENT DATA ORANG TUA 
     // =========================================================================
-    
+
     public function dataOrtu()
     {
         $daftarOrtu = DB::table('users')->where('role', 'orang_tua')->get();
@@ -219,22 +288,17 @@ class AdminController extends Controller
     public function simpanOrtu(Request $request)
     {
         $request->validate([
-            'nama'     => 'required|string|max:255',
-            'username' => 'required|string|max:255',
+            'nama'     => 'required|string|max:255',          
+            'username' => 'required|string|max:255|unique:users,username',
             'siswa_id' => 'required|numeric',
         ]);
-
-        $cekUsername = DB::table('users')->where('username', trim($request->username))->first();
-        if ($cekUsername) {
-            return back()->with('error', 'Gagal! Username tersebut sudah digunakan oleh user lain.');
-        }
 
         try {
             DB::beginTransaction();
 
             $ortuId = DB::table('users')->insertGetId([
-                'nama'       => trim($request->nama),
-                'username'   => trim($request->username),
+                'nama'       => trim($request->nama),  
+                'username'   => strtolower(trim($request->username)),
                 'role'       => 'orang_tua',
                 'password'   => Hash::make('ortu123'),
                 'created_at' => now(),
@@ -249,14 +313,14 @@ class AdminController extends Controller
             DB::commit();
             return back()->with('success', 'Akun Orang Tua berhasil dibuat dengan Username!');
         } catch (\Exception $e) {
-            DB::beginTransaction(); // Reset transaction jika error
+            DB::rollBack();                                    
             return back()->with('error', 'Terjadi kesalahan sistem saat menyimpan data.');
         }
     }
 
     public function editOrtu($id)
     {
-        $ortu = DB::table('users')->where('id', $id)->where('role', 'orangtua')->first();
+        $ortu = DB::table('users')->where('id', $id)->where('role', 'orang_tua')->first();
         if (!$ortu) { abort(404); }
 
         $anakSekarang = DB::table('siswa')->where('ortu_id', $id)->first();
@@ -269,22 +333,27 @@ class AdminController extends Controller
 
     public function updateOrtu(Request $request, $id)
     {
+        // Ditambahkan validasi unique exception agar tidak bentrok dengan user lain saat ganti username
         $request->validate([
-            'nama'     => 'required|string|max:255',
-            'username' => 'required|string|max:255',
+            'nama'     => 'required|string|max:255',           
+            'username' => 'required|string|max:255|unique:users,username,' . $id,
             'siswa_id' => 'required|numeric',
         ]);
 
         try {
             DB::beginTransaction();
 
+            // Proses Update data user (Orang tua)
             DB::table('users')->where('id', $id)->update([
-                'nama'       => trim($request->nama),
-                'username'   => trim($request->username),
+                'nama'       => trim($request->nama),          
+                'username'   => strtolower(trim($request->username)),
                 'updated_at' => now(),
             ]);
 
+            // Lepas relasi anak yang lama terlebih dahulu
             DB::table('siswa')->where('ortu_id', $id)->update(['ortu_id' => null]);
+            
+            // Hubungkan ke anak yang baru dipilih di form
             DB::table('siswa')->where('id', $request->siswa_id)->update([
                 'ortu_id'    => $id,
                 'updated_at' => now(),
@@ -293,6 +362,7 @@ class AdminController extends Controller
             DB::commit();
             return redirect('/admin/ortu')->with('success', 'Data Orang Tua berhasil diperbarui!');
         } catch (\Exception $e) {
+            DB::rollBack();                                   
             return back()->with('error', 'Gagal memperbarui data.');
         }
     }
@@ -306,7 +376,8 @@ class AdminController extends Controller
             DB::commit();
             return redirect('/admin/ortu')->with('success', 'Akun Orang Tua berhasil dihapus.');
         } catch (\Exception $e) {
+            DB::rollBack();
             return back()->with('error', 'Gagal menghapus data.');
         }
-    }
+    }   
 }

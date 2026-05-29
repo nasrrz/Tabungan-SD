@@ -41,13 +41,16 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/admin/siswa/simpan', [\App\Http\Controllers\AdminController::class, 'simpanSiswa']);
             Route::delete('/admin/siswa/hapus/{id}', [\App\Http\Controllers\AdminController::class, 'hapusSiswa']);
             Route::get('/admin/kelas', [\App\Http\Controllers\AdminController::class, 'dataKelas']);
-
+            Route::get('/admin/siswa/edit/{id}', [\App\Http\Controllers\AdminController::class, 'editSiswa']);
+            Route::put('/admin/siswa/update/{id}', [\App\Http\Controllers\AdminController::class, 'updateSiswa']);
+            Route::get('/admin/kelas/edit/{id}', [\App\Http\Controllers\AdminController::class, 'editKelas']);
+            Route::put('/admin/kelas/update/{id}', [\App\Http\Controllers\AdminController::class, 'updateKelas']);
             // RUTE MANAJEMEN ORANG TUA
             Route::get('/admin/ortu', [\App\Http\Controllers\AdminController::class, 'dataOrtu']);
             Route::post('/admin/ortu/simpan', [\App\Http\Controllers\AdminController::class, 'simpanOrtu']);
-            Route::get('/admin/ortu/edit/{id}', [\App\Http\Controllers\AdminController::class, 'editOrtu']);
-            Route::post('/admin/ortu/update/{id}', [\App\Http\Controllers\AdminController::class, 'updateOrtu']);
             Route::delete('/admin/ortu/hapus/{id}', [\App\Http\Controllers\AdminController::class, 'hapusOrtu']);
+            Route::get('/admin/ortu/edit/{id}', [\App\Http\Controllers\AdminController::class, 'editOrtu']);
+            Route::put('/admin/ortu/update/{id}', [\App\Http\Controllers\AdminController::class, 'updateOrtu']);
         });
     });
 
