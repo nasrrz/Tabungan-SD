@@ -51,7 +51,7 @@ Schema::create('kelas', function (Blueprint $table) {
 
 ---
 
-🏁 Panduan Instalasi Deployment (Ubuntu / Debian)
+## 🏁 Panduan Instalasi Deployment (Ubuntu / Debian)
 Ikuti langkah-langkah berikut untuk melakukan deployment repositori ini ke server produksi berbasis Debian/Ubuntu Linux.
 
 1. Persiapan Environment Server
@@ -134,7 +134,7 @@ sudo find /var/www/Tabungan-SD -type d -exec chmod 755 {} \;
 
 ---
 
-🌐 Referensi Konfigurasi Web Server
+## 🌐 Referensi Konfigurasi Web Server
 Pilih salah satu dari konfigurasi web server di bawah ini sesuai dengan engine yang aktif di server Debian/Ubuntu Anda.
 
 Opsi A: Menggunakan Nginx (Direkomendasikan)
@@ -220,7 +220,7 @@ sudo systemctl restart apache2
 
 ---
 
-🛠️ Optimasi Produksi (Production Cache)
+## 🛠️ Optimasi Produksi (Production Cache)
 Setelah aplikasi berhasil terpasang dan berjalan lancar, jalankan serangkaian perintah ini di direktori root aplikasi untuk mempercepat performa Laravel:
 
 ```Bash
